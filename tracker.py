@@ -15,7 +15,7 @@ def main():
         description = 'Logs the time spent working on the thesis.',
         epilog = f'Copyright {YEAR} - {AUTHOR}')
 
-    parser.add_argument('operation', choices=['start', 'stop'], help='The operation to be performed. \'start\' will add a new log entry with the (current) start time. \'stop\' will complete the last entry with the (current) end time.')
+    parser.add_argument('operation', choices=['start', 'stop', 'total', 'avg_week'], help='The operation to be performed. \'start\' will add a new log entry with the (current) start time. \'stop\' will complete the last entry with the (current) end time.')
     parser.add_argument('-c', '--comment', type=str, metavar='TEXT', default='', help='A comment to be stored along the logged start/end time.')
     parser.add_argument('-V', '--version', action='version', version=f'%(prog)s {VERSION}')
     parser.add_argument('-v', '--verbose', action='store_true', help='TODO')
@@ -54,12 +54,24 @@ def main():
             args.comment = last_comment
         new_row = pd.Series({"start": readable_time, "end": "", "comment": args.comment})
         df = pd.concat([df, new_row.to_frame().T], ignore_index=True)
-    elif args.operation == "stop" and not last_end_time_null:
-        print("There is no timer that can be stopped. You should start a new timer instead.")
-        parser.exit(-3)
+    elif args.operation == "stop":
+        if not last_end_time_null:
+            print("There is no timer that can be stopped. You should start a new timer instead.")
+            parser.exit(-3)
+        else:
+            df.loc[len(df)-1, 'end'] = readable_time
+    elif args.operation == "total":
+        print(f"Total time worked on thesis: {(df['end'] - df['start']).sum()}")
+    elif args.operation == "avg_week":
+        raise NotImplementedError("TODO: calculate number of weeks since start of thesis.")
+        weeks = 5
+        print(f"Average time per week worked on thesis: {(df['end'] - df['start']).sum() / weeks}")
     else:
-        df.loc[len(df)-1, 'end'] = readable_time
-    df.to_csv(args.log_file_path, index=False)
+        print(f"Unexpected operation: {args.operation}.")
+        parser.exit(-4)
+
+    if args.operation in {"start", "stop"}:
+        df.to_csv(args.log_file_path, index=False)
 
 
 if __name__ == "__main__":
