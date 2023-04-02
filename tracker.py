@@ -4,7 +4,7 @@ import os
 import csv
 import pandas as pd
 
-VERSION = "0.1.0"
+VERSION = "0.2.0"
 AUTHOR  = "heckej"
 YEAR    = 2023
 
