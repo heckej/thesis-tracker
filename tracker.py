@@ -15,7 +15,7 @@ def main():
         description = 'Logs the time spent working on the thesis.',
         epilog = f'Copyright {YEAR} - {AUTHOR}')
 
-    parser.add_argument('operation', choices=['start', 'stop', 'total', 'this_week', 'avg_week'], help='The operation to be performed. \'start\' will add a new log entry with the (current) start time. \'stop\' will complete the last entry with the (current) end time.')
+    parser.add_argument('operation', choices=['start', 'stop', 'total', 'this_week', 'avg_week'], help="The operation to be performed. 'start' will add a new log entry with the (current) start time. 'stop' will complete the last entry with the (current) end time. 'total' returns the total amount of time tracked. 'this_week' returns the amount of time tracked during the current week. 'avg_week' averages the total amount of time tracked since the first week until the current week.")
     parser.add_argument('-c', '--comment', type=str, metavar='TEXT', default='', help='A comment to be stored along the logged start/end time.')
     parser.add_argument('-V', '--version', action='version', version=f'%(prog)s {VERSION}')
     parser.add_argument('-v', '--verbose', action='store_true', help='TODO')
